@@ -1,0 +1,143 @@
+.timeline-section {
+  background: var(--bg-secondary);
+}
+
+.timeline-track-wrapper {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline-axis-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px;
+  width: 2px;
+  z-index: 1;
+}
+
+.timeline-nodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.timeline-node {
+  position: relative;
+  padding-left: 60px;
+  z-index: 2;
+}
+
+/* Axis dot marker */
+.timeline-marker {
+  position: absolute;
+  left: 10px;
+  top: 28px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform var(--transition-fast);
+}
+
+.timeline-node:hover .timeline-marker {
+  transform: scale(1.15);
+}
+
+/* Timeline Content Card */
+.timeline-content-card {
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(22, 22, 26, 0.3);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.timeline-content-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .timeline-content-card:hover {
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.node-header {
+  margin-bottom: 20px;
+}
+
+.node-period {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.node-role {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.node-company {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Bullet Highlights List */
+.node-bullet-points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.node-bullet-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.bullet-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.bullet-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+  .timeline-node {
+    padding-left: 48px;
+  }
+  .timeline-axis-line {
+    left: 12px;
+  }
+  .timeline-marker {
+    left: 2px;
+  }
+  .timeline-content-card {
+    padding: 24px;
+  }
+  .node-role {
+    font-size: 18px;
+  }
+}

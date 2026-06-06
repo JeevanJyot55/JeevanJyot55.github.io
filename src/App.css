@@ -1,0 +1,22 @@
+.app-viewport {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-left: 240px; /* Keep layout clear of the vertical sidebar */
+  transition: padding-left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-left: 0;
+    padding-top: 48px; /* Leave space for mobile horizontal topbar */
+  }
+}
