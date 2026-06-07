@@ -287,11 +287,6 @@ export const portfolioData = {
       { name: "JJY", score: 180 },
       { name: "GOO", score: 150 },
       { name: "DEV", score: 120 }
-    ],
-    tracks: [
-      { id: "synth", title: "Chrome Dino Synth", artist: "T-Rex Beats", length: "3:42", url: "" },
-      { id: "lofi", title: "Google Cache & Chill", artist: "Midnight Lofi", length: "4:15", url: "" },
-      { id: "ambient", title: "Tensor Core Focus", artist: "Deep Ambient", length: "5:08", url: "" }
     ]
   }
 };

@@ -12,7 +12,7 @@ export default function InteractiveOS({ activeColor, handleColorChange, theme, t
     { type: 'system', text: 'Type "help" to see available commands.' },
     { type: 'system', text: '' }
   ]);
-  const terminalBottomRef = useRef(null);
+  const terminalScrollRef = useRef(null);
   const terminalInputRef = useRef(null);
 
   const colors = [
@@ -24,15 +24,23 @@ export default function InteractiveOS({ activeColor, handleColorChange, theme, t
 
   // Scroll to bottom of terminal whenever history updates
   useEffect(() => {
-    if (terminalBottomRef.current) {
-      terminalBottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (terminalScrollRef.current) {
+      terminalScrollRef.current.scrollTop = terminalScrollRef.current.scrollHeight;
     }
   }, [terminalHistory]);
 
   const focusTerminalInput = () => {
     if (terminalInputRef.current) {
-      terminalInputRef.current.focus();
+      terminalInputRef.current.focus({ preventScroll: true });
     }
+  };
+
+  const preservePageScroll = () => {
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    requestAnimationFrame(() => {
+      window.scrollTo({ left: scrollX, top: scrollY, behavior: 'auto' });
+    });
   };
 
   const handleTerminalSubmit = (e) => {
@@ -69,6 +77,7 @@ export default function InteractiveOS({ activeColor, handleColorChange, theme, t
       case 'clear':
         setTerminalHistory([]);
         setTerminalInput('');
+        preservePageScroll();
         return;
       case 'sudo hire':
         // Trigger high-fidelity confetti celebration
@@ -86,8 +95,9 @@ export default function InteractiveOS({ activeColor, handleColorChange, theme, t
     }
 
     response.push({ type: 'output', text: '' }); // spacer
-    setTerminalHistory([...terminalHistory, ...response]);
+    setTerminalHistory((history) => [...history, ...response]);
     setTerminalInput('');
+    preservePageScroll();
   };
 
   return (
@@ -167,7 +177,7 @@ export default function InteractiveOS({ activeColor, handleColorChange, theme, t
             </div>
             
             <div className="terminal-body">
-              <div className="terminal-scroll-area">
+              <div className="terminal-scroll-area" ref={terminalScrollRef}>
                 {terminalHistory.map((line, idx) => (
                   <div 
                     key={idx} 
@@ -176,7 +186,6 @@ export default function InteractiveOS({ activeColor, handleColorChange, theme, t
                     {line.text}
                   </div>
                 ))}
-                <div ref={terminalBottomRef}></div>
               </div>
 
               <form onSubmit={handleTerminalSubmit} className="terminal-prompt-row">

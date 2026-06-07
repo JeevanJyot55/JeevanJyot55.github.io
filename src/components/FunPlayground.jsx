@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipForward, SkipBack, Music, Gamepad2, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react';
+import { Briefcase, Code2, Database, Gamepad2, GraduationCap, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { portfolioData } from '../portfolioData';
 import './FunPlayground.css';
 
 const GRID_SIZE = 15;
@@ -16,14 +15,45 @@ export default function FunPlayground({ activeColor }) {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(120);
   const [gameStarted, setGameStarted] = useState(false);
+  const [activeFocus, setActiveFocus] = useState('google');
   const gameInterval = useRef(null);
 
-  // --- MUSIC PLAYER STATE ---
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(30); // percentage
-  const progressInterval = useRef(null);
-  const tracks = portfolioData.arcade.tracks;
+  const focusItems = [
+    {
+      id: 'google',
+      label: 'Google',
+      icon: <Briefcase size={16} />,
+      title: 'Software engineering at Google',
+      description: 'Working with AI integration in Android development for Google Photos, with a focus on customer impact.',
+      stats: ['Kotlin', 'Java', 'Jetpack Compose']
+    },
+    {
+      id: 'ai',
+      label: 'AI',
+      icon: <Code2 size={16} />,
+      title: 'AI agents and translation systems',
+      description: 'Built LLM-integrated workflow automation and an ML model translating C into Python.',
+      stats: ['Python', 'Transformers', 'LLMs']
+    },
+    {
+      id: 'data',
+      label: 'Data',
+      icon: <Database size={16} />,
+      title: 'Big data systems',
+      description: 'Supported CS 544 students with Spark, Docker, BigQuery, GitLab workflows, and project debugging.',
+      stats: ['Spark', 'Docker', 'BigQuery']
+    },
+    {
+      id: 'school',
+      label: 'School',
+      icon: <GraduationCap size={16} />,
+      title: 'CS + Economics at UW-Madison',
+      description: 'Studying software systems, algorithms, databases, machine learning methods, economics, and finance.',
+      stats: ['CS', 'Economics', 'Finance']
+    }
+  ];
+
+  const selectedFocus = focusItems.find((item) => item.id === activeFocus) || focusItems[0];
 
   // --- SNAKE GAME LOGIC ---
   const generateFood = () => {
@@ -150,40 +180,6 @@ export default function FunPlayground({ activeColor }) {
     return () => clearInterval(gameInterval.current);
   }, [gameStarted, gameOver, direction, food, highScore]);
 
-  // --- MUSIC PLAYER LOGIC ---
-  useEffect(() => {
-    if (isPlaying) {
-      progressInterval.current = setInterval(() => {
-        setTrackProgress((prev) => {
-          if (prev >= 100) {
-            // cycle to next track when finished
-            setCurrentTrackIndex((idx) => (idx + 1) % tracks.length);
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 1000);
-    } else {
-      if (progressInterval.current) clearInterval(progressInterval.current);
-    }
-
-    return () => clearInterval(progressInterval.current);
-  }, [isPlaying]);
-
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleNextTrack = () => {
-    setCurrentTrackIndex((prev) => (prev + 1) % tracks.length);
-    setTrackProgress(0);
-  };
-
-  const handlePrevTrack = () => {
-    setCurrentTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
-    setTrackProgress(0);
-  };
-
   return (
     <section id="playground" className="playground-section section">
       <div className="playground-container container">
@@ -191,7 +187,7 @@ export default function FunPlayground({ activeColor }) {
           <span className="eyebrow">The Fun Side</span>
           <h2 className="section-title">Playground. Interactive breaks.</h2>
           <p className="section-subtitle">
-            Take a load off! Play a quick classic arcade game or preview my coding soundtrack logs.
+            A small interactive corner: play a quick arcade round or skim the work areas I keep coming back to.
           </p>
         </div>
 
@@ -282,75 +278,42 @@ export default function FunPlayground({ activeColor }) {
             </div>
           </div>
 
-          {/* Right block: soundtrack player */}
-          <div className="playground-card glass music-card">
+          {/* Right block: portfolio focus panel */}
+          <div className="playground-card glass focus-card">
             <div className="card-top-header">
-              <Music size={16} className="play-icon" style={{ color: activeColor }} />
-              <span>Focus Playlist</span>
+              <Code2 size={16} className="play-icon" style={{ color: activeColor }} />
+              <span>Builder Snapshot</span>
             </div>
 
-            <div className="music-wrapper">
-              <div className="album-art-box">
-                <div className="art-disc" style={{ 
-                  animationPlayState: isPlaying ? 'running' : 'paused',
-                  borderColor: activeColor 
-                }}>
-                  <div className="disc-inner">
-                    <Music size={28} style={{ color: activeColor }} />
+            <div className="focus-wrapper">
+              <div className="focus-selector">
+                {focusItems.map((item) => (
+                  <button
+                    key={item.id}
+                    className={`focus-chip ${activeFocus === item.id ? 'focus-chip-active' : ''}`}
+                    onClick={() => setActiveFocus(item.id)}
+                    style={{ '--focus-color': activeColor }}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="focus-display">
+                <div className="focus-orbit" style={{ borderColor: activeColor }}>
+                  <div className="focus-orbit-core" style={{ backgroundColor: activeColor }}>
+                    {selectedFocus.icon}
                   </div>
                 </div>
-                {/* Dynamic music wave animation */}
-                {isPlaying && (
-                  <div className="playing-waves">
-                    <span className="wave-bar bar-active-1" style={{ backgroundColor: activeColor }}></span>
-                    <span className="wave-bar bar-active-2" style={{ backgroundColor: activeColor, animationDelay: '0.2s' }}></span>
-                    <span className="wave-bar bar-active-3" style={{ backgroundColor: activeColor, animationDelay: '0.4s' }}></span>
-                    <span className="wave-bar bar-active-4" style={{ backgroundColor: activeColor, animationDelay: '0.1s' }}></span>
-                  </div>
-                )}
+                <h3>{selectedFocus.title}</h3>
+                <p>{selectedFocus.description}</p>
               </div>
 
-              <div className="track-info">
-                <h3 className="track-title">{tracks[currentTrackIndex].title}</h3>
-                <p className="track-artist">{tracks[currentTrackIndex].artist}</p>
-              </div>
-
-              {/* Progress Slider */}
-              <div className="music-progress-container">
-                <div className="progress-bar-track">
-                  <div 
-                    className="progress-bar-fill" 
-                    style={{ 
-                      width: `${trackProgress}%`,
-                      backgroundColor: activeColor 
-                    }}
-                  ></div>
-                </div>
-                <div className="time-stamps">
-                  <span className="time-elapsed">
-                    {Math.floor((trackProgress / 100) * 4)}:
-                    {String(Math.floor(((trackProgress / 100) * 4 * 60) % 60)).padStart(2, '0')}
-                  </span>
-                  <span className="time-total">{tracks[currentTrackIndex].length}</span>
-                </div>
-              </div>
-
-              {/* Player Controllers */}
-              <div className="music-controls">
-                <button className="music-ctrl-btn" onClick={handlePrevTrack} aria-label="Previous Track">
-                  <SkipBack size={20} />
-                </button>
-                <button 
-                  className="music-ctrl-btn play-pause-btn" 
-                  onClick={handlePlayPause}
-                  style={{ backgroundColor: activeColor }}
-                  aria-label={isPlaying ? "Pause Track" : "Play Track"}
-                >
-                  {isPlaying ? <Pause size={20} fill="#fff" /> : <Play size={20} fill="#fff" style={{ marginLeft: 3 }} />}
-                </button>
-                <button className="music-ctrl-btn" onClick={handleNextTrack} aria-label="Next Track">
-                  <SkipForward size={20} />
-                </button>
+              <div className="focus-stat-grid">
+                {selectedFocus.stats.map((stat) => (
+                  <span key={stat} style={{ borderColor: `${activeColor}55` }}>{stat}</span>
+                ))}
               </div>
             </div>
           </div>
