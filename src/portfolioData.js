@@ -1,9 +1,9 @@
 export const portfolioData = {
   personal: {
     name: "Jeevan Jyot Singh",
-    title: "Software Engineering Intern at Google & CS/Economics student at UW-Madison",
+    title: "CS/Economics student at UW-Madison and Software Engineering Intern at Google",
     slogan: "Designed to build. Built to inspire.",
-    subSlogan: "CS and Economics student at UW-Madison, currently building software, tooling, and platform improvements as a Software Engineering Intern at Google.",
+    subSlogan: "Building AI-integrated Android features, data systems, and full-stack projects with a focus on practical customer impact.",
     resumeUrl: "/JeevanJyot_Singh_Resume.pdf",
     socials: {
       github: "https://github.com/JeevanJyot55",

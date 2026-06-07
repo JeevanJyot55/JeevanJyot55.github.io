@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Terminal, Settings, FileText } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { portfolioData } from '../portfolioData';
+import { createLocalAnswer } from '../utils/localJeevanAssistant';
 import './InteractiveOS.css';
 
 export default function InteractiveOS({ activeColor, handleColorChange, theme, toggleTheme }) {
@@ -45,16 +46,31 @@ export default function InteractiveOS({ activeColor, handleColorChange, theme, t
 
   const handleTerminalSubmit = (e) => {
     e.preventDefault();
-    const command = terminalInput.trim().toLowerCase();
+    const rawInput = terminalInput.trim();
+    const command = rawInput.toLowerCase();
     if (!command) return;
 
     let response = [];
     response.push({ type: 'input', text: `jeevanos@user:~$ ${terminalInput}` });
 
+    if (command === 'ask' || command.startsWith('ask ')) {
+      const question = rawInput.replace(/^ask\s*/i, '').trim();
+      response.push({ type: 'output', text: 'Local JeevanOS assistant:' });
+      createLocalAnswer(question).forEach((line) => {
+        response.push({ type: 'output', text: `  ${line}` });
+      });
+      response.push({ type: 'output', text: '' });
+      setTerminalHistory((history) => [...history, ...response]);
+      setTerminalInput('');
+      preservePageScroll();
+      return;
+    }
+
     switch (command) {
       case 'help':
         response.push({ type: 'output', text: 'Available commands:' });
         response.push({ type: 'output', text: '  about      - Learn more about Jeevan' });
+        response.push({ type: 'output', text: '  ask        - Ask the local assistant about Jeevan' });
         response.push({ type: 'output', text: '  skills     - Display technical skill set summary' });
         response.push({ type: 'output', text: '  journey    - View the professional timeline summary' });
         response.push({ type: 'output', text: '  clear      - Clear the console history' });
