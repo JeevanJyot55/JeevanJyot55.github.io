@@ -1,10 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
-import { Briefcase, Code2, Database, Gamepad2, GraduationCap, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react';
+import { Film, Gamepad2, Shuffle, Star, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import './FunPlayground.css';
 
 const GRID_SIZE = 15;
 const INITIAL_SPEED = 150;
+const MOVIE_POOL = [
+  { title: 'Inception', year: '2010', genre: 'Sci-Fi', vibe: 'Dream logic and layered heists', rating: '8.8' },
+  { title: 'Interstellar', year: '2014', genre: 'Sci-Fi', vibe: 'Cosmic scale with emotional stakes', rating: '8.7' },
+  { title: 'The Dark Knight', year: '2008', genre: 'Action', vibe: 'Gritty hero pressure cooker', rating: '9.0' },
+  { title: 'Spider-Verse', year: '2018', genre: 'Animation', vibe: 'Comic-book energy and style', rating: '8.4' },
+  { title: 'Everything Everywhere', year: '2022', genre: 'Adventure', vibe: 'Multiverse chaos with heart', rating: '7.8' },
+  { title: 'The Social Network', year: '2010', genre: 'Drama', vibe: 'Builder drama and sharp dialogue', rating: '7.8' },
+  { title: 'Parasite', year: '2019', genre: 'Thriller', vibe: 'Sharp social twists', rating: '8.5' },
+  { title: 'Whiplash', year: '2014', genre: 'Drama', vibe: 'Intensity turned all the way up', rating: '8.5' },
+  { title: 'La La Land', year: '2016', genre: 'Musical', vibe: 'Dreamy Los Angeles ambition', rating: '8.0' },
+  { title: 'Dune: Part Two', year: '2024', genre: 'Sci-Fi', vibe: 'Epic desert politics', rating: '8.5' },
+  { title: 'Top Gun: Maverick', year: '2022', genre: 'Action', vibe: 'Clean blockbuster adrenaline', rating: '8.2' },
+  { title: 'Oppenheimer', year: '2023', genre: 'Drama', vibe: 'High-stakes genius and fallout', rating: '8.3' }
+];
+
+const getRandomMoviePair = () => {
+  const firstIndex = Math.floor(Math.random() * MOVIE_POOL.length);
+  let secondIndex = Math.floor(Math.random() * MOVIE_POOL.length);
+
+  while (secondIndex === firstIndex) {
+    secondIndex = Math.floor(Math.random() * MOVIE_POOL.length);
+  }
+
+  return [MOVIE_POOL[firstIndex], MOVIE_POOL[secondIndex]];
+};
 
 export default function FunPlayground({ activeColor }) {
   // --- SNAKE GAME STATE ---
@@ -15,45 +40,9 @@ export default function FunPlayground({ activeColor }) {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(120);
   const [gameStarted, setGameStarted] = useState(false);
-  const [activeFocus, setActiveFocus] = useState('google');
+  const [moviePair, setMoviePair] = useState(() => getRandomMoviePair());
+  const [moviePicks, setMoviePicks] = useState([]);
   const gameInterval = useRef(null);
-
-  const focusItems = [
-    {
-      id: 'google',
-      label: 'Google',
-      icon: <Briefcase size={16} />,
-      title: 'Software engineering at Google',
-      description: 'Working with AI integration in Android development for Google Photos, with a focus on customer impact.',
-      stats: ['Kotlin', 'Java', 'Jetpack Compose']
-    },
-    {
-      id: 'ai',
-      label: 'AI',
-      icon: <Code2 size={16} />,
-      title: 'AI agents and translation systems',
-      description: 'Built LLM-integrated workflow automation and an ML model translating C into Python.',
-      stats: ['Python', 'Transformers', 'LLMs']
-    },
-    {
-      id: 'data',
-      label: 'Data',
-      icon: <Database size={16} />,
-      title: 'Big data systems',
-      description: 'Supported CS 544 students with Spark, Docker, BigQuery, GitLab workflows, and project debugging.',
-      stats: ['Spark', 'Docker', 'BigQuery']
-    },
-    {
-      id: 'school',
-      label: 'School',
-      icon: <GraduationCap size={16} />,
-      title: 'CS + Economics at UW-Madison',
-      description: 'Studying software systems, algorithms, databases, machine learning methods, economics, and finance.',
-      stats: ['CS', 'Economics', 'Finance']
-    }
-  ];
-
-  const selectedFocus = focusItems.find((item) => item.id === activeFocus) || focusItems[0];
 
   // --- SNAKE GAME LOGIC ---
   const generateFood = () => {
@@ -89,6 +78,15 @@ export default function FunPlayground({ activeColor }) {
     // Avoid reversing directly into self
     if (direction[0] + newDir[0] === 0 && direction[1] + newDir[1] === 0) return;
     setDirection(newDir);
+  };
+
+  const shuffleMovies = () => {
+    setMoviePair(getRandomMoviePair());
+  };
+
+  const pickMovie = (movie) => {
+    setMoviePicks((currentPicks) => [movie, ...currentPicks].slice(0, 5));
+    setMoviePair(getRandomMoviePair());
   };
 
   useEffect(() => {
@@ -187,7 +185,7 @@ export default function FunPlayground({ activeColor }) {
           <span className="eyebrow">The Fun Side</span>
           <h2 className="section-title">Playground. Interactive breaks.</h2>
           <p className="section-subtitle">
-            A small interactive corner: play a quick arcade round or skim the work areas I keep coming back to.
+            A small interactive corner: play a quick arcade round or make a few CineRank-style movie picks.
           </p>
         </div>
 
@@ -278,42 +276,59 @@ export default function FunPlayground({ activeColor }) {
             </div>
           </div>
 
-          {/* Right block: portfolio focus panel */}
-          <div className="playground-card glass focus-card">
+          {/* Right block: movie this-or-that game */}
+          <div className="playground-card glass movie-game-card">
             <div className="card-top-header">
-              <Code2 size={16} className="play-icon" style={{ color: activeColor }} />
-              <span>Builder Snapshot</span>
+              <Film size={16} className="play-icon" style={{ color: activeColor }} />
+              <span>Movie This or That</span>
             </div>
 
-            <div className="focus-wrapper">
-              <div className="focus-selector">
-                {focusItems.map((item) => (
+            <div className="movie-game-wrapper">
+              <div className="movie-round-header">
+                <div>
+                  <span className="movie-round-label">CineRank mini</span>
+                  <h3>What are you watching?</h3>
+                </div>
+                <button className="movie-shuffle-btn" onClick={shuffleMovies} type="button">
+                  <Shuffle size={14} />
+                  New Pair
+                </button>
+              </div>
+
+              <div className="movie-pair-grid">
+                {moviePair.map((movie) => (
                   <button
-                    key={item.id}
-                    className={`focus-chip ${activeFocus === item.id ? 'focus-chip-active' : ''}`}
-                    onClick={() => setActiveFocus(item.id)}
-                    style={{ '--focus-color': activeColor }}
+                    key={`${movie.title}-${movie.year}`}
+                    className="movie-choice-card"
+                    onClick={() => pickMovie(movie)}
+                    type="button"
+                    style={{ '--movie-color': activeColor }}
                   >
-                    {item.icon}
-                    <span>{item.label}</span>
+                    <span className="movie-choice-genre">{movie.genre}</span>
+                    <h4>{movie.title}</h4>
+                    <p>{movie.vibe}</p>
+                    <div className="movie-choice-meta">
+                      <span>{movie.year}</span>
+                      <span>
+                        <Star size={12} fill="currentColor" />
+                        {movie.rating}
+                      </span>
+                    </div>
                   </button>
                 ))}
               </div>
 
-              <div className="focus-display">
-                <div className="focus-orbit" style={{ borderColor: activeColor }}>
-                  <div className="focus-orbit-core" style={{ backgroundColor: activeColor }}>
-                    {selectedFocus.icon}
+              <div className="movie-picks-panel">
+                <span className="movie-picks-label">Recent picks</span>
+                {moviePicks.length > 0 ? (
+                  <div className="movie-picks-list">
+                    {moviePicks.map((movie, index) => (
+                      <span key={`${movie.title}-${index}`}>{movie.title}</span>
+                    ))}
                   </div>
-                </div>
-                <h3>{selectedFocus.title}</h3>
-                <p>{selectedFocus.description}</p>
-              </div>
-
-              <div className="focus-stat-grid">
-                {selectedFocus.stats.map((stat) => (
-                  <span key={stat} style={{ borderColor: `${activeColor}55` }}>{stat}</span>
-                ))}
+                ) : (
+                  <p>No picks yet. Choose a side to start the streak.</p>
+                )}
               </div>
             </div>
           </div>

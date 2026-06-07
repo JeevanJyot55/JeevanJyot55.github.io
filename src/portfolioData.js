@@ -182,16 +182,6 @@ export const portfolioData = {
       ]
     },
     {
-      period: "Aug 2024 - May 2026",
-      role: "Learning Community Program Assistant",
-      company: "University of Wisconsin - Division of Housing",
-      highlights: [
-        "Organized and led weekly events for 550+ students across residential learning communities.",
-        "Built interpersonal relationships and a stronger sense of community through consistent student programming.",
-        "Practiced adaptable, client-oriented problem solving in a dynamic on-campus environment."
-      ]
-    },
-    {
       period: "Jun 2025 - Jan 2026",
       role: "Artificial Intelligence Intern",
       company: "Anvian Innovations (Remote / Dover, DE)",
@@ -199,6 +189,16 @@ export const portfolioData = {
         "Designed and deployed AI agents integrated with large language models to automate workflows and improve efficiency.",
         "Collaborated with cross-functional teams on cloud-based applications, research, and client-ready demos.",
         "Monitored and optimized system performance while staying current with AI and machine learning techniques."
+      ]
+    },
+    {
+      period: "Aug 2024 - May 2026",
+      role: "Learning Community Program Assistant",
+      company: "University of Wisconsin - Division of Housing",
+      highlights: [
+        "Organized and led weekly events for 550+ students across residential learning communities.",
+        "Built interpersonal relationships and a stronger sense of community through consistent student programming.",
+        "Practiced adaptable, client-oriented problem solving in a dynamic on-campus environment."
       ]
     },
     {
